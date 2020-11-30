@@ -1,0 +1,194 @@
+const Sequelize = require( 'sequelize' );
+const Q = require( 'q' );
+
+const #{object_pascal_case}Repository = require( '@models/#{module_snake_case}/#{model_sub_module}/#{object_snake_case}_repository' );
+
+const { Logger, Account } = require( '@helpers' );
+
+const Op = Sequelize.Op;
+
+class #{object_pascal_case}Handler {
+
+	/**
+	* @constructor
+	* @param {string} channelId
+	* @param {object} userData
+	*/
+	constructor( channelId, userData = null ) {
+		this.channelId = channelId;
+		this.currentUser = userData;
+		this.account = new Account( userData );
+	}
+
+	/**
+	* Handle get #{object} list
+	* @param {object} queryOptions
+	* @return {promise}
+	*/
+	handleGetAll( queryOptions = {} ) {
+		const deferred = Q.defer();
+
+		try {
+			const #{object_camel_case}Repository = new #{object_pascal_case}Repository( this.channelId );
+
+			// Get all #{object}
+			return #{object_camel_case}Repository.getAll();
+		} catch ( error ) {
+			deferred.reject( error );
+			new Logger().write( 'error', error, this.channelId );
+		}
+
+		return deferred.promise;
+	}
+
+	/**
+	* Handle get #{object}
+	* @param {int} id - #{object_pascal_case} id
+	* @param {object} queryOptions
+	* @return {promise}
+	*/
+	handleGetOne( id, queryOptions = {} ) {
+		const deferred = Q.defer();
+
+		try {
+			const #{object_camel_case}Repository = new #{object_pascal_case}Repository( this.channelId );
+
+			// Get one #{object}
+			return #{object_camel_case}Repository.getOne({
+				where: { id },
+			});
+		} catch ( error ) {
+			deferred.reject( error );
+			new Logger().write( 'error', error, this.channelId );
+		}
+
+		return deferred.promise;
+	}
+
+	/**
+	* Handle create #{object}
+	* @param {object} data - #{object_pascal_case} data
+	* @return {promise}
+	*/
+	async handleCreate( data ) {
+		const deferred = Q.defer();
+
+		try {
+			const #{object_camel_case}Repository = new #{object_pascal_case}Repository( this.channelId );
+
+			// Create #{object}
+			const createData = {};
+			const [ #{object_camel_case}, created ] = await #{object_camel_case}Repository
+			.findOrCreate({
+				defaults: createData,
+				where: {
+					// Fields need check already exists
+				},
+			});
+
+			if ( !#{object_camel_case} || !created ) {
+				deferred.resolve({
+					status	: false,
+					message	: '#{object_uppercase}_ALREADY_EXISTS',
+				});
+				return deferred.promise;
+			}
+
+			deferred.resolve({
+				status	: true,
+				message	: 'CREATE_#{object_uppercase}_SUCCESS',
+			});
+		} catch ( error ) {
+			deferred.reject( error );
+			new Logger().write( 'error', error, this.channelId );
+		}
+
+		return deferred.promise;
+	}
+
+	/**
+	* Handle update #{object}
+	* @param {int} id - #{object_pascal_case} id
+	* @param {object} data - #{object_pascal_case} data
+	* @return {promise}
+	*/
+	async handleUpdate( id, data ) {
+		const deferred = Q.defer();
+
+		try {
+			const #{object_camel_case}Repository = new #{object_pascal_case}Repository( this.channelId );
+
+			// Get #{object}
+			const #{object_camel_case} = await #{object_camel_case}Repository.getOne({
+				attributes: [ 'id' ],
+				where: {
+					id: { [ Op.ne ]: id },
+					// Fields need check already exists
+				},
+			});
+
+			if ( #{object_camel_case} ) {
+				deferred.resolve({
+					status	: false,
+					message	: '#{object_uppercase}_ALREADY_EXISTS',
+				});
+				return deferred.promise;
+			}
+
+			const updateData = {};
+			const updateOptions = {
+				where: { id },
+			};
+
+			// Update #{object}
+			return #{object_camel_case}Repository.update( updateData, updateOptions );
+		} catch ( error ) {
+			deferred.reject( error );
+			new Logger().write( 'error', error, this.channelId );
+		}
+
+		return deferred.promise;
+	}
+
+	/**
+	* Handle delete #{object}
+	* @param {int} id - #{object_pascal_case} id
+	* @return {promise}
+	*/
+	async handleDelete( id ) {
+		const deferred = Q.defer();
+
+		try {
+			const #{object_camel_case}Repository = new #{object_pascal_case}Repository( this.channelId );
+
+			// Get #{object}
+			const #{object_camel_case} = await #{object_camel_case}Repository.getOne({
+				attributes	: [ 'id' ],
+				where		: { id },
+			});
+
+			if ( !#{object_camel_case} ) {
+				deferred.resolve({
+					status	: false,
+					message	: 'DELETE_#{object_uppercase}_FAIL',
+				});
+				return deferred.promise;
+			}
+
+			const deleteOptions = {
+				where: { id },
+			};
+
+			// Delete #{object}
+			return #{object_camel_case}Repository.delete( deleteOptions );
+		} catch ( error ) {
+			deferred.reject( error );
+			new Logger().write( 'error', error, this.channelId );
+		}
+
+		return deferred.promise;
+	}
+
+}
+
+module.exports = #{object_pascal_case}Handler;

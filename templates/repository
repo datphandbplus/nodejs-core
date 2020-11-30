@@ -1,0 +1,15 @@
+const #{object_pascal_case} = require( './#{object_snake_case}' );
+const Repository = require( '@models/repository' );
+
+class #{object_pascal_case}Repository extends Repository {
+
+	/**
+	* @constructor
+	*/
+	constructor() {
+		super( #{object_pascal_case}() );
+	}
+
+}
+
+module.exports = #{object_pascal_case}Repository;

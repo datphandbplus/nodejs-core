@@ -1,0 +1,43 @@
+const Sequelize = require( 'sequelize' );
+const Q = require( 'q' );
+
+const BaseModel = require( '@models/base' );
+
+module.exports = async channelId => {
+	const deferred = Q.defer();
+
+	try {
+		let #{object_pascal_case}Model = BaseModel.get( channelId, '#{object_snake_case}' );
+
+		if ( #{object_pascal_case}Model ) {
+			deferred.resolve( #{object_pascal_case}Model );
+			return deferred.promise;
+		}
+
+		#{object_pascal_case}Model = await BaseModel.define(
+			channelId,
+			'#{object_snake_case}',
+			{
+				field: {
+					type		: Sequelize.STRING,
+					allowNull	: false,
+					validate	: { len: [ 1, 255 ] },
+				},
+			},
+			{ paranoid: true }
+		);
+
+		try {
+			// Associations
+		} catch {}
+
+		// Cache model is associated
+		BaseModel.set( channelId, '#{object_snake_case}', #{object_pascal_case}Model );
+
+		deferred.resolve( #{object_pascal_case}Model );
+	} catch ( error ) {
+		deferred.reject( error );
+	}
+
+	return deferred.promise;
+};

@@ -1,0 +1,10 @@
+const STATUS_CODE = {
+	NOT_FOUND			: 404,
+	BAD_REQUEST			: 400,
+	UNAUTHORIZED		: 401,
+	SERVER_ERROR		: 500,
+	OK					: 200,
+	PERMISSION_DENIED	: 403,
+};
+
+module.exports = STATUS_CODE;

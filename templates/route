@@ -1,0 +1,91 @@
+const express = require( 'express' );
+
+const #{object_pascal_case}Handler = require( '@handlers/#{module_snake_case}/#{handler_sub_module}/#{object_snake_case}' );
+
+const { ApiCache, Validator } = require( '@helpers' );
+const { STATUS_CODE } = require( '@resources' );
+
+const router = express.Router();
+
+router.use( '/', ( req, res, next ) => {
+	const userData = res.locals.user_data;
+
+	req.#{object_pascal_case}Handler = new #{object_pascal_case}Handler( userData );
+	next();
+} );
+
+router.get( '/list', ApiCache.cache(), async ( req, res, next ) => {
+	try {
+		const result = await req.#{object_pascal_case}Handler.handleGetAll( req.query );
+
+		res.status( STATUS_CODE.OK );
+		res.json( result );
+	} catch ( error ) {
+		next( error );
+	}
+} );
+
+router.get( '/detail/:id', ApiCache.cache(), async ( req, res, next ) => {
+	try {
+		const result = await req.#{object_pascal_case}Handler.handleGetOne( +req.params.id, req.query );
+
+		res.status( STATUS_CODE.OK );
+		res.json( result );
+	} catch ( error ) {
+		next( error );
+	}
+} );
+
+router.post( '/create', async ( req, res, next ) => {
+	try {
+		req.checkBody( 'body' ).notEmpty();
+
+		// Validate body
+		await Validator.validate( req );
+
+		const result = await req.#{object_pascal_case}Handler.handleCreate( req.body );
+
+		// Destroy cache
+		ApiCache.destroy( res );
+
+		res.status( STATUS_CODE.OK );
+		res.json( result );
+	} catch ( error ) {
+		next( error );
+	}
+} );
+
+router.put( '/update/:id', async ( req, res, next ) => {
+	try {
+		req.checkBody( 'body' ).notEmpty();
+
+		// Validate body
+		await Validator.validate( req );
+
+		const result = await req.#{object_pascal_case}Handler.handleUpdate( +req.params.id, req.body );
+
+		// Destroy cache
+		ApiCache.destroy( res );
+
+		res.status( STATUS_CODE.OK );
+		res.json( result );
+	} catch ( error ) {
+		next( error );
+	}
+} );
+
+router.delete( '/delete/:id', async ( req, res, next ) => {
+	try {
+		const result = await req.#{object_pascal_case}Handler.handleDelete( +req.params.id );
+
+		// Destroy cache
+		ApiCache.destroy( res );
+
+		res.status( STATUS_CODE.OK );
+		res.json( result );
+	} catch ( error ) {
+		next( error );
+	}
+} );
+
+module.exports = router;
